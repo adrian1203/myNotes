@@ -10,6 +10,8 @@ import webservice.restapi.repository.NoteRepository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
+import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -43,6 +45,17 @@ public class NoteController {
         //noteRepository.delete(selectNote);
         noteRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/myAltNotes")
+    public List<Note> getAltNotes(){
+        LinkedList<Note> linkedList=new LinkedList<>();
+        List<Note>notes= noteRepository.findAll();
+        for (Note x: notes){
+                if(x.getModified().getMonth()<(new Timestamp(System.currentTimeMillis())).getMonth() ||x.getModified().getYear()<(new Timestamp(System.currentTimeMillis())).getYear() ){
+                    linkedList.add(x);
+                }
+        }
+        return linkedList;
     }
 
 }
