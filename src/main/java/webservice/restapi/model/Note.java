@@ -31,10 +31,10 @@ public class Note {
     @Column
     @NotBlank
     private String content;
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
     private Timestamp created;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @UpdateTimestamp
     private Timestamp modified;
     public Note(){}
