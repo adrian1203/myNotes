@@ -21,7 +21,14 @@ public class NoteController {
 
     @GetMapping("/myNotes")
     public List<Note> getAllNotes(){
-        return noteRepository.findAll();
+        LinkedList<Note> note=new LinkedList<>();
+        List<Note>allNote= noteRepository.findAll();
+        for (Note x: allNote){
+            if(x.getArchived()==false){
+                note.add(x);
+            }
+        }
+        return note;
     }
     @PostMapping("/myNotes")
     public void createNote(@Valid @RequestBody Note note){
@@ -50,9 +57,9 @@ public class NoteController {
         LinkedList<Note> altNote=new LinkedList<>();
         List<Note>notes= noteRepository.findAll();
         for (Note x: notes){
-                if(x.getModified().getMonth()<(new Timestamp(System.currentTimeMillis())).getMonth() ||x.getModified().getYear()<(new Timestamp(System.currentTimeMillis())).getYear() ){
-                    altNote.add(x);
-                }
+            if(x.getModified().getMonth()<(new Timestamp(System.currentTimeMillis())).getMonth() ||x.getModified().getYear()<(new Timestamp(System.currentTimeMillis())).getYear() ){
+                altNote.add(x);
+            }
         }
         return altNote;
     }
@@ -61,9 +68,22 @@ public class NoteController {
         List<Note> allNote=noteRepository.findAll();
         for(Note x: allNote){
             if(x.getCreated().before(timestamp)){
+                System.out.println("archivizujeeeee");
                 x.setArchived(true);
             }
         }
+        noteRepository.saveAll(allNote);
+    }
+    @GetMapping("/myArchivedNote")
+    public List<Note> getArchivedNote(){
+        LinkedList<Note> archivedNote=new LinkedList<>();
+        List<Note>notes= noteRepository.findAll();
+        for (Note x: notes){
+            if(x.getArchived()==true){
+                archivedNote.add(x);
+            }
+        }
+        return archivedNote;
     }
 
 }
