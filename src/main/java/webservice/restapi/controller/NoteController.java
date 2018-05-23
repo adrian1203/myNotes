@@ -24,8 +24,8 @@ public class NoteController {
         return noteRepository.findAll();
     }
     @PostMapping("/myNotes")
-    public Note createNote(@Valid @RequestBody Note note){
-        return noteRepository.save(note);
+    public void createNote(@Valid @RequestBody Note note){
+        noteRepository.save(note);
     }
     @GetMapping("/myNotes/{id}")
     public Note getNoteById(@PathVariable(value = "id") Integer id){
@@ -37,7 +37,6 @@ public class NoteController {
         selectNote.setContent(note.getContent());
         selectNote.setTitle(note.getTitle());
         noteRepository.save(selectNote);
-        //return noteRepository.save(selectNote);
     }
     @DeleteMapping("myNotes/{id}")
     public ResponseEntity<?> deleteNote(@PathVariable(value = "id")Integer id ){
@@ -48,14 +47,23 @@ public class NoteController {
     }
     @GetMapping("/myAltNotes")
     public List<Note> getAltNotes(){
-        LinkedList<Note> linkedList=new LinkedList<>();
+        LinkedList<Note> altNote=new LinkedList<>();
         List<Note>notes= noteRepository.findAll();
         for (Note x: notes){
                 if(x.getModified().getMonth()<(new Timestamp(System.currentTimeMillis())).getMonth() ||x.getModified().getYear()<(new Timestamp(System.currentTimeMillis())).getYear() ){
-                    linkedList.add(x);
+                    altNote.add(x);
                 }
         }
-        return linkedList;
+        return altNote;
+    }
+    @PutMapping("/archivedNote")
+    public void archivedNote(@Valid @RequestBody Timestamp timestamp){
+        List<Note> allNote=noteRepository.findAll();
+        for(Note x: allNote){
+            if(x.getCreated().before(timestamp)){
+                x.setArchived(true);
+            }
+        }
     }
 
 }

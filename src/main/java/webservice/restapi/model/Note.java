@@ -37,6 +37,8 @@ public class Note {
     @Column(nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @UpdateTimestamp
     private Timestamp modified;
+    @Column(name = "isArchived", nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean isArchived=false;
     public Note(){}
 
     public String getTitle() {
@@ -73,5 +75,13 @@ public class Note {
 
     public void setModified(Timestamp modified) {
         this.modified = modified;
+    }
+
+    public Boolean getArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(Boolean archived) {
+        isArchived = archived;
     }
 }
